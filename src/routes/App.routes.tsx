@@ -1,8 +1,8 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import { ListCities } from '../screens/List';
 import { useTheme } from 'styled-components';
+
+import { ListCities } from '../screens/ListCities';
 
 const App = createNativeStackNavigator();
 
