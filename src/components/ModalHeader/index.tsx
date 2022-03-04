@@ -9,10 +9,12 @@ import {
 } from './styles';
 
 interface Props {
+  title: string;
   onPressClose: () => void;
 }
 
 export function ModalHeader({
+  title,
   onPressClose
 }: Props) {
   return (
@@ -22,7 +24,7 @@ export function ModalHeader({
           <IconClose name="x" />
         </ButtonClose>
 
-        <Title>Selecione a cidade</Title>
+        <Title>{title}</Title>
       </Content>
     </Container>
   )
