@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
 import { Modal } from 'react-native';
 
 import { SelectCities } from '../SelectCities';
@@ -12,12 +13,12 @@ import {
 } from './styles';
 
 export function ListCities() {
+  const [listcities, setListcities] = useState()
   const [citiesModalOpen, setCitiesModalOpen] = useState(false);
 
-  const [cities, setCities] = useState({
-    key: 'cidades',
-    name: 'Selecione'
-  })
+  useFocusEffect(useCallback(() => {
+    console.log('teste')
+  }, []))
 
   function handleOpenSelectCities() {
     setCitiesModalOpen(true)
@@ -37,13 +38,12 @@ export function ListCities() {
         </SearchButton>
       </Header>
 
-      {/* Aqui vai a listagem de cidades que o usuario ja cadastrou */}
+      
 
       <Modal visible={citiesModalOpen}>
-        <SelectCities 
+        <SelectCities
+          setVisible={setCitiesModalOpen}
           closeSelectCities={handleCloseSelectCities}
-          cities={cities}
-          setCities={setCities}
         />
       </Modal>
     </Container>

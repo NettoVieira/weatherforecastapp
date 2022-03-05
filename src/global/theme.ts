@@ -6,7 +6,7 @@ export default {
     shape: '#fff',
     title: '#322C49',
     text: '#322C49',
-    background: '#FBF7FF'
+    background: '#F0F2F5'
   },
   fonts: {
     poppins_regular: 'Poppins_400Regular',

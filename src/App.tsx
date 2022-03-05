@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StatusBar style="inverted" translucent={false} backgroundColor={theme.colors.primary}/>
+      <StatusBar style="auto" translucent={false} backgroundColor={theme.colors.primary}/>
       
       <GestureHandlerRootView style={{flex: 1}}>
         <NavigationContainer>

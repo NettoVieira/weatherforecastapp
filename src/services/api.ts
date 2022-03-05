@@ -8,6 +8,7 @@ export const weatherAPI: AxiosInstance = axios.create({
   params: {
     appid: api_key,
     lang: language,
+    units: 'metric'
   },
 
   headers: {

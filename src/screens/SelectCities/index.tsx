@@ -1,93 +1,116 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
-import { Modal } from 'react-native';
+import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Alert, Text } from 'react-native';
+import { UpdateMode } from 'realm';
 
+import { getRealm } from '../../services/realm'
 import { ModalHeader } from '../../components/ModalHeader';
-import { StatesSelectButton } from '../../components/StatesSelectButton';
-import { SelectStates } from '../SelectStates';
-
-import { SearchCitiesAPI } from '../../services/api';
+import { Button } from '../../components/Button';
+import { CardCity } from '../../components/CardCity';
+import { weatherAPI } from '../../services/api';
 
 import { 
   Container,
-  ContentButton,
-  ListItem
+  ContentSearchInput,
+  Footer,
+  ItemsList
 } from './styles';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-interface Cities {
-  key: string;
-  name: string;
+export interface Cities {
+  main_text: string,
+  secondary_text: string,
+  temp: number,
+  weather_description: string,
+  temp_max: number,
+  temp_min: number,
+  lat: string,
+  lon: string
 }
 
 interface CitiesSelectProps {
-  cities: Cities;
-  setCities: (category: Cities) => void;
+  setVisible: (visible: boolean) => void;
   closeSelectCities: () => void;
 }
 
-export interface IStates {
-  id: number;
-  nome: string;
-  sigla: string;
-}
-
 export function SelectCities({
-  cities,
-  setCities,
+  setVisible,
   closeSelectCities
 } : CitiesSelectProps) {
-  const [selectStatesModalOpen, setSelectStatesModalOpen] = useState(false);
-  const [states, setStates] = useState<IStates>()
+  const [listSelectedCities, setListSelectedCities] = useState<Cities[]>([])
 
-  // useFocusEffect(useCallback(() => {
-  //   async function LoadStates() {
-  //     const {data} = await SearchCitiesAPI.get('uf/v1');
-      
-  //     setListStates(data)
-  //   }
+  const handleSelectCitiesAndInsert = useCallback(async (data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
+    const paramsRequest = {
+      q: data.structured_formatting.main_text
+    }
 
-  //   LoadStates();
-  // }, []));
+    const response = await weatherAPI.get('weather', {params: paramsRequest})
+    
+    const insertCities: Cities = {
+      main_text: data.structured_formatting.main_text,
+      secondary_text: data.structured_formatting.secondary_text,
+      temp: response.data.main.temp,
+      temp_max: response.data.main.temp_max,
+      temp_min: response.data.main.temp_min,
+      weather_description: response.data.weather[0]?.description,
+      lat: response.data.coord.lat,
+      lon: response.data.coord.lon
+    }
 
-  function OpenSelectStates() {
-    setSelectStatesModalOpen(true);
-  }
+    setListSelectedCities([...listSelectedCities, insertCities])
+  }, [])
 
-  function closeSelectStates() {
-    setSelectStatesModalOpen(false);
+  async function handleConfirm() {
+    try {
+      const realm = await getRealm();
+
+      for (const insertCities of listSelectedCities) {
+        console.log(insertCities)
+
+        realm.write(() => {
+          realm.create<Cities>('CitiesSchema', insertCities, UpdateMode.Modified)
+        })
+      }
+      realm.close();
+      closeSelectCities()
+    } catch (error) {
+      Alert.alert('Erro', `${error}`);
+    } 
   }
 
   return (
-    <Container>
-      <ModalHeader 
-        onPressClose={closeSelectCities} 
-        title="Selecione a cidade"
-      />
-
-      <ContentButton>
-        <GooglePlacesAutocomplete
-          placeholder='Search'
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details);
-          }}
-          query={{
-            key: 'AIzaSyDSmzD1ydG1BQVZpn7XVjhy9A5VZz1HIpY',
-            language: 'pt-BR',
-          }}
+    <>
+      <Container>
+        <ModalHeader 
+          onPressClose={closeSelectCities} 
+          title="Selecione a cidade"
         />
-      </ContentButton>
-
-      {/* Aqui vai a listagem de cidades */}
-
-      <Modal visible={selectStatesModalOpen}>
-        <SelectStates 
-          closeSelectStates={closeSelectStates}
-          setStates={setStates!}
-          states={states!}
-        />
-      </Modal>
-    </Container>
+        
+        <ContentSearchInput>
+          <GooglePlacesAutocomplete
+            placeholder='Search'
+            styles={{textInput: {height: RFValue(60), elevation: 1}}}
+            fetchDetails
+            renderHeaderComponent={() => <Text>Olaaa</Text>}
+            onPress={handleSelectCitiesAndInsert}
+            query={{
+              key: 'AIzaSyBiZ7bbDF_830rfWdK-L6XZKFhPaTyx7QE',
+              language: 'pt-BR',
+              components: 'country:br',
+              type: '(cities)'
+            }}
+          />
+          
+          <ItemsList 
+            data={listSelectedCities}
+            keyExtractor={(item) => item.main_text}
+            renderItem={({item}) => <CardCity nameCity={item.main_text} region={item.secondary_text} />}
+          />
+        </ContentSearchInput>
+      </Container>
+      <Footer>
+        <Button title='Confirmar' onPress={handleConfirm}/>
+      </Footer>
+    </>
   )
 }
