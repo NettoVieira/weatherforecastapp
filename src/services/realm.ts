@@ -7,6 +7,6 @@ export function getRealm() {
     schema: [
       CitiesSchema
     ],
-    schemaVersion: 3,
+    schemaVersion: 4,
   });
 }

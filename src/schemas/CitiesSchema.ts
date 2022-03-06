@@ -10,7 +10,8 @@ class CitiesSchema {
       temp_max: 'double',
       temp_min: 'double',
       lat: 'string',
-      lon: 'string'
+      lon: 'string',
+      isFavorite: 'bool'
     },
   };
 }

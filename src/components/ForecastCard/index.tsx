@@ -10,11 +10,14 @@ import {
   Temp,
   Footer,
   WeatherDescription,
-  TempMinMax
+  TempMinMax,
+  ButtonFavoriteCity
 } from './styles';
 
 interface Props {
-  onPress?: () => void,
+  onPressCard?: () => void,
+  onPressFavorite?: () => void,
+
   main_text: string,
   secondary_text: string,
   temp: number,
@@ -22,20 +25,23 @@ interface Props {
   temp_max: number,
   temp_min: number,
   isVisibleIcon: boolean,
+  isFavorite?: boolean
 }
 
-export function WeatherCardCity({
+export function ForeCastCard({
   main_text,
   secondary_text,
   temp,
   weather_description,
   temp_max,
   temp_min,
-  onPress,
-  isVisibleIcon
+  onPressCard,
+  isVisibleIcon,
+  onPressFavorite,
+  isFavorite
 }: Props) {
   return (
-    <Container onPress={onPress}>
+    <Container onPress={onPressCard}>
       
       <Header>
         <ContainerTexts>
@@ -55,7 +61,14 @@ export function WeatherCardCity({
         </ContainerTexts>
         
         {isVisibleIcon && (
-          <Icon name="ios-heart-outline"/>
+          <ButtonFavoriteCity onPress={onPressFavorite}>
+            {isFavorite ? (
+              <Icon name="ios-heart-sharp"/>
+            ) : (
+              <Icon name="ios-heart-outline"/>
+            )}
+            
+          </ButtonFavoriteCity>
         )}
         
       </Footer>

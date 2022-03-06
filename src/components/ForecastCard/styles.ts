@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { RectButton } from 'react-native-gesture-handler';
 
-export const Container = styled(RectButton)`
+export const Container = styled.TouchableOpacity`
   width: 100%;
   background-color: ${({theme}) => theme.colors.shape};
   padding: 16px 16px ;
@@ -61,4 +61,8 @@ export const WeatherDescription = styled.Text`
   font-size: ${RFValue(12)}px;
   font-family: ${({theme}) => theme.fonts.poppins_medium};
   color : ${({theme}) => theme.colors.orange};
+`;
+
+export const ButtonFavoriteCity = styled.TouchableOpacity`
+  
 `;

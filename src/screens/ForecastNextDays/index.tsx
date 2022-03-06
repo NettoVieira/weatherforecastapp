@@ -6,12 +6,14 @@ import eolocale from 'date-fns/locale/pt-BR'
 
 import { weatherAPI } from '../../services/api';
 import { Header } from '../../components/Header';
-import { WeatherCardCity } from '../../components/WeatherCardCity';
+import { ForeCastCard } from '../../components/ForecastCard';
 
 import { 
   Container,
   ItemsList 
 } from './styles';
+import { Alert } from 'react-native';
+import { Loading } from '../../components/Loading';
 
 
 interface Cities {
@@ -49,11 +51,13 @@ interface RouteProps {
 }
 
 export function ForecastNextDays({route}: RouteProps) {
-  const [forecastDaily, setForecastDaily] = useState<ForecastDaily[]>([])
+  const [forecastDaily, setForecastDaily] = useState<ForecastDaily[]>([]);
+  const [isLoading, setLoading] = useState(false);
 
   useFocusEffect(useCallback(() => {
     async function LoadForecasts() {
       try {
+        setLoading(true)
         const params = {
           lat: route.params.lat,
           lon: route.params.lon,
@@ -84,13 +88,18 @@ export function ForecastNextDays({route}: RouteProps) {
 
         setForecastDaily(listForecastDaily)
       } catch (error) {
-        console.log(error)
+        Alert.alert('Erro', `${error}`)
+      } finally {
+        setLoading(false)
       }
     }
 
     LoadForecasts();
   }, []))
 
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <Container>
@@ -100,7 +109,7 @@ export function ForecastNextDays({route}: RouteProps) {
         data={forecastDaily}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
-          <WeatherCardCity 
+          <ForeCastCard 
             main_text={item.daylyweek}
             temp={item.temp.day}
             temp_max={item.temp.max}

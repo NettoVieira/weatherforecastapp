@@ -20,11 +20,7 @@ export const Header = styled.View`
   flex-direction: row;
 `;
 
-export const Title = styled.Text`
-  font-size: ${RFValue(16)}px;
-  color: ${({theme}) => theme.colors.shape};
-  font-family: ${({theme}) => theme.fonts.poppins_medium};
-`;
+
 
 export const Icon = styled(Feather)`
   font-size: ${RFValue(24)}px;
@@ -63,6 +59,21 @@ export const TextManageButton = styled.Text`
 `;
 
 export const IconManageButton = styled(FontAwesome5)`
-    font-size: ${RFValue(24)}px;
+  font-size: ${RFValue(24)}px;
   color: ${({theme}) => theme.colors.orange};
 `
+
+export const ContainerEmptyList = styled.View`
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+`;
+
+export const EmptyText = styled.Text`
+  margin-top: 16px;
+  font-size: ${RFValue(16)}px;
+  color: ${({theme}) => theme.colors.text};
+  font-family: ${({theme}) => theme.fonts.poppins_medium};
+  text-align: center;
+`;

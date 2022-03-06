@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
-import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
+import React, { Dispatch, SetStateAction, useCallback, useState, useRef } from 'react';
+import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail, GooglePlacesAutocompleteRef } from 'react-native-google-places-autocomplete';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Alert, Text } from 'react-native';
 import { UpdateMode } from 'realm';
@@ -9,6 +9,7 @@ import { ModalHeader } from '../../components/ModalHeader';
 import { Button } from '../../components/Button';
 import { CardCity } from '../../components/CardCity';
 import { weatherAPI } from '../../services/api';
+import { Loading } from '../../components/Loading';
 
 import { 
   Container,
@@ -25,7 +26,8 @@ export interface Cities {
   temp_max: number,
   temp_min: number,
   lat: string,
-  lon: string
+  lon: string,
+  isFavorite: boolean
 }
 
 interface CitiesSelectProps {
@@ -42,9 +44,13 @@ export function SelectCities({
   listcities
 } : CitiesSelectProps) {
   const [listSelectedCities, setListSelectedCities] = useState<Cities[]>([])
+  const [isLoading, setLoading] = useState(false)
+
+  const textinputRef = useRef<GooglePlacesAutocompleteRef>(null)
 
   const handleSelectCities = useCallback(async (data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
     try {
+      setLoading(true)
       const paramsRequest = {
         q: data.structured_formatting.main_text
       }
@@ -59,14 +65,17 @@ export function SelectCities({
         temp_min: Math.round(response.data.main.temp_min),
         weather_description: response.data.weather[0]?.description,
         lat: String(response.data.coord.lat),
-        lon: String(response.data.coord.lon)
+        lon: String(response.data.coord.lon),
+        isFavorite: false,
       }
   
       setListSelectedCities(oldState => [...oldState, insertCities])
+      textinputRef.current?.clear()
     } catch (error: any) {
       Alert.alert('Erro', `${error.response.data.message}`)
+    } finally {
+      setLoading(false)
     }
-   
   }, [])
 
   async function handleConfirm() {
@@ -91,7 +100,8 @@ export function SelectCities({
           temp: item.temp,
           temp_max: item.temp_max,
           temp_min: item.temp_min,
-          weather_description: item.weather_description
+          weather_description: item.weather_description,
+          isFavorite: item.isFavorite
         }
 
         loadListCities.push(itemlist)
@@ -116,24 +126,27 @@ export function SelectCities({
         
         <ContentSearchInput>
           <GooglePlacesAutocomplete
-            placeholder='Search'
+            placeholder='Pesquisar a cidade'
             styles={{textInput: {height: RFValue(60), elevation: 1}}}
             fetchDetails
-            renderHeaderComponent={() => <Text>Olaaa</Text>}
+            textInputProps={{}}     
+            ref={textinputRef}       
             onPress={handleSelectCities}
             query={{
               key: 'AIzaSyBiZ7bbDF_830rfWdK-L6XZKFhPaTyx7QE',
               language: 'pt-BR',
-              components: 'country:br',
+              
               type: '(cities)'
             }}
           />
-          
-          <ItemsList 
-            data={listSelectedCities}
-            keyExtractor={(item) => item.main_text}
-            renderItem={({item}) => <CardCity nameCity={item.main_text} region={item.secondary_text} />}
-          />
+          {isLoading ? <Loading /> : (
+            <ItemsList 
+              data={listSelectedCities}
+              keyExtractor={(item) => item.main_text}
+              renderItem={({item}) => <CardCity nameCity={item.main_text} region={item.secondary_text} />}
+            />
+          )}
+        
         </ContentSearchInput>
       </Container>
       <Footer>
