@@ -1,10 +1,10 @@
 import axios, {AxiosInstance} from 'axios';
 
-const api_key = '19c1ceb3a5086b883f472fddbfbfdb9a';
+const api_key = '46efed7b561da2b5c6bfc3db749aa449';
 const language = 'pt';
 
 export const weatherAPI: AxiosInstance = axios.create({
-  baseURL: `http://api.openweathermap.org/data/2.5/`,
+  baseURL: `https://api.openweathermap.org/data/2.5/`,
   params: {
     appid: api_key,
     lang: language,

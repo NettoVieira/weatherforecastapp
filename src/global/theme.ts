@@ -3,6 +3,18 @@ export default {
     primary: '#444DF5',
     secondary: '#958BB6',
 
+    orange: '#FF815F',
+    red: '#E00017',
+
+    success: '#12A454',
+    success_light: '#a5d6a7',
+
+    information: '#ffd600',
+    information_ligth: '#fff9c4',
+
+    attention: '#E83F5B',
+    attention_light: 'rgba(232, 63, 91, 0.5)',
+
     shape: '#fff',
     title: '#322C49',
     text: '#322C49',

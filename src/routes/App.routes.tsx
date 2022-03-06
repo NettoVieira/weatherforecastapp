@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { useTheme } from 'styled-components';
 
 import { ListCities } from '../screens/ListCities';
+import { ForecastNextDays } from '../screens/ForecastNextDays';
 
 const App = createNativeStackNavigator();
 
@@ -18,6 +19,10 @@ export function AppRoutes() {
       <App.Screen 
         name="List"
         component={ListCities}
+      />
+      <App.Screen 
+        name="ForecastNextDays"
+        component={ForecastNextDays}
       />
       
     </App.Navigator>

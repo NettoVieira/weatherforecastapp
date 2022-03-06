@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { GooglePlacesAutocomplete, GooglePlaceData, GooglePlaceDetail } from 'react-native-google-places-autocomplete';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Alert, Text } from 'react-native';
@@ -31,33 +31,42 @@ export interface Cities {
 interface CitiesSelectProps {
   setVisible: (visible: boolean) => void;
   closeSelectCities: () => void;
+  setListcities: Dispatch<SetStateAction<Cities[]>>
+  listcities: Cities[];
 }
 
 export function SelectCities({
   setVisible,
-  closeSelectCities
+  closeSelectCities,
+  setListcities,
+  listcities
 } : CitiesSelectProps) {
   const [listSelectedCities, setListSelectedCities] = useState<Cities[]>([])
 
-  const handleSelectCitiesAndInsert = useCallback(async (data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
-    const paramsRequest = {
-      q: data.structured_formatting.main_text
+  const handleSelectCities = useCallback(async (data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
+    try {
+      const paramsRequest = {
+        q: data.structured_formatting.main_text
+      }
+  
+      const response = await weatherAPI.get('weather', {params: paramsRequest})
+  
+      const insertCities: Cities = {
+        main_text: data.structured_formatting.main_text,
+        secondary_text: data.structured_formatting.secondary_text,
+        temp: Math.round(response.data.main.temp),
+        temp_max: Math.round(response.data.main.temp_max),
+        temp_min: Math.round(response.data.main.temp_min),
+        weather_description: response.data.weather[0]?.description,
+        lat: String(response.data.coord.lat),
+        lon: String(response.data.coord.lon)
+      }
+  
+      setListSelectedCities(oldState => [...oldState, insertCities])
+    } catch (error: any) {
+      Alert.alert('Erro', `${error.response.data.message}`)
     }
-
-    const response = await weatherAPI.get('weather', {params: paramsRequest})
-    
-    const insertCities: Cities = {
-      main_text: data.structured_formatting.main_text,
-      secondary_text: data.structured_formatting.secondary_text,
-      temp: response.data.main.temp,
-      temp_max: response.data.main.temp_max,
-      temp_min: response.data.main.temp_min,
-      weather_description: response.data.weather[0]?.description,
-      lat: response.data.coord.lat,
-      lon: response.data.coord.lon
-    }
-
-    setListSelectedCities([...listSelectedCities, insertCities])
+   
   }, [])
 
   async function handleConfirm() {
@@ -65,12 +74,31 @@ export function SelectCities({
       const realm = await getRealm();
 
       for (const insertCities of listSelectedCities) {
-        console.log(insertCities)
-
         realm.write(() => {
           realm.create<Cities>('CitiesSchema', insertCities, UpdateMode.Modified)
         })
       }
+      const loadListCities: Cities[] = [] as Cities[]
+
+      const cities = realm.objects<Cities>('CitiesSchema');
+      
+      cities.forEach((item) => {
+        const itemlist: Cities = {
+          lat: item.lat,
+          lon: item.lon,
+          main_text: item.main_text,
+          secondary_text: item.secondary_text,
+          temp: item.temp,
+          temp_max: item.temp_max,
+          temp_min: item.temp_min,
+          weather_description: item.weather_description
+        }
+
+        loadListCities.push(itemlist)
+      })
+
+      setListcities(loadListCities)
+
       realm.close();
       closeSelectCities()
     } catch (error) {
@@ -92,7 +120,7 @@ export function SelectCities({
             styles={{textInput: {height: RFValue(60), elevation: 1}}}
             fetchDetails
             renderHeaderComponent={() => <Text>Olaaa</Text>}
-            onPress={handleSelectCitiesAndInsert}
+            onPress={handleSelectCities}
             query={{
               key: 'AIzaSyBiZ7bbDF_830rfWdK-L6XZKFhPaTyx7QE',
               language: 'pt-BR',
