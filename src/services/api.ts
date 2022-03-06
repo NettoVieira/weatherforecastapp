@@ -16,15 +16,3 @@ export const weatherAPI: AxiosInstance = axios.create({
   },
 });
 
-export const SearchCitiesAPI: AxiosInstance = axios.create({
-  // baseURL: 'https://servicodados.ibge.gov.br/api/v1/localidades/',
-
- 
-  baseURL: 'https://brasilapi.com.br/api/ibge/',
-
-  headers: {
-    'Content-Type': 'application/json',
-  }
-})
-
-

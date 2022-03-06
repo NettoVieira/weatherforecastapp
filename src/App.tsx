@@ -17,25 +17,6 @@ import AppLoading from 'expo-app-loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
-  // useEffect(() => {
-  //   async function LoadView() {
-  //     const params = {
-  //       q: 'sao jose do rio preto',
-  //       lat: 0,
-  //       lon: 0,
-  //       units: 'metric'
-  //     };
-
-  //     const response = await SearchCitiesAPI.get('estados/35/municipios');
-
-  //     for (const item of response.data) {
-  //       console.log(item.nome)
-  //     }
-  //   }
-
-  //   LoadView();
-  // }, [])
-
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
