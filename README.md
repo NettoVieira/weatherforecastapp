@@ -1,7 +1,7 @@
 
 # Weather ForecastAPP
 
-Aplicativo desenvolvido para mostra a previsão do tempo.
+Aplicativo desenvolvido para mostrar a previsão do tempo das cidades que você escolher.
 
 
 ## 🛠 Ferramentas utilizadas
