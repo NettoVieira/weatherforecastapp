@@ -3,7 +3,7 @@ import { BorderlessButton, RectButton, Swipeable } from 'react-native-gesture-ha
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { FlatList, FlatListProps } from 'react-native';
-import { Cities } from '.';
+import { Cities } from '../../interfaces/Cities';
 
 interface ListItemProps extends FlatListProps<Cities>{}
 

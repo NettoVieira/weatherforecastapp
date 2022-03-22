@@ -11,24 +11,14 @@ import { CardCity } from '../../components/CardCity';
 import { weatherAPI } from '../../services/api';
 import { Loading } from '../../components/Loading';
 
+import { Cities } from '../../interfaces/Cities';
+
 import { 
   Container,
   ContentSearchInput,
   Footer,
   ItemsList
 } from './styles';
-
-export interface Cities {
-  main_text: string,
-  secondary_text: string,
-  temp: number,
-  weather_description: string,
-  temp_max: number,
-  temp_min: number,
-  lat: string,
-  lon: string,
-  isFavorite: boolean
-}
 
 interface CitiesSelectProps {
   setVisible: (visible: boolean) => void;

@@ -2,7 +2,7 @@ import { RFPercentage } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { FlatList, FlatListProps } from 'react-native';
-import { Cities } from './'
+import { Cities } from '../../interfaces/Cities'
 
 interface ListItemProps extends FlatListProps<Cities>{}
 

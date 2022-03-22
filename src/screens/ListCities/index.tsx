@@ -12,6 +12,8 @@ import { ButtonSwipeable } from '../../components/ButtonSwipple';
 import { Header } from '../../components/Header'
 import CitySVG from '../../assets/svg/Weather.svg';
 
+import { Cities } from '../../interfaces/Cities';
+
 import { 
   Container,
   ItemsList,
@@ -23,18 +25,6 @@ import {
   ContainerEmptyList,
   EmptyText
 } from './styles';
-
-export interface Cities {
-  main_text: string,
-  secondary_text: string,
-  temp: number,
-  weather_description: string,
-  temp_max: number,
-  temp_min: number,
-  lat: string,
-  lon: string,
-  isFavorite: boolean;
-}
 
 export function ListCities() {
   const { navigate }: NavigationProp<ParamListBase> = useNavigation();

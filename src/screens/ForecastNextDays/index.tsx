@@ -14,18 +14,8 @@ import {
 } from './styles';
 import { Alert } from 'react-native';
 import { Loading } from '../../components/Loading';
+import { Cities } from '../../interfaces/Cities';
 
-
-interface Cities {
-  main_text: string,
-  secondary_text: string,
-  temp: number,
-  weather_description: string,
-  temp_max: number,
-  temp_min: number,
-  lat: string,
-  lon: string
-}
 
 interface ForecastTempDaily {
   day: number,
